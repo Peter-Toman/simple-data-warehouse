@@ -88,6 +88,7 @@ class StatisticsService {
                     }
                 }
             }
+            cache(true)
 
         } as List
 
