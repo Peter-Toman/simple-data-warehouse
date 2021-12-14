@@ -12,6 +12,7 @@ class StatisticsService {
     QueryResult getResult(ApiQuery apiQuery) {
         BuildableCriteria dpCriteria = DailyPerformance.createCriteria()
 
+        List<String> missingRequiredGroupBy = provideRequiredMissingGroupBy(apiQuery)
 
         List result = dpCriteria.list {
             resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
@@ -80,6 +81,11 @@ class StatisticsService {
                     apiQuery.groupBy.each {
                         groupProperty(it)
                     }
+                    if(missingRequiredGroupBy.size() > 0) {
+                        missingRequiredGroupBy.each {
+                            groupProperty(it)
+                        }
+                    }
                 }
             }
 
@@ -88,6 +94,16 @@ class StatisticsService {
         QueryResult queryResult = new QueryResult()
         queryResult.result = result
         return queryResult
+    }
+
+    List<String> provideRequiredMissingGroupBy(ApiQuery apiQuery) {
+        List<String> requiredGroupBy = apiQuery.projections.collect {
+            it.attributeName
+        }
+        if (requiredGroupBy.size() == 0) {
+            return []
+        }
+        return requiredGroupBy - apiQuery.groupBy
     }
 
 }

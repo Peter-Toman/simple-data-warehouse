@@ -133,8 +133,8 @@ environments:
             url: jdbc:postgresql://localhost:5432/warehouse_test
     production:
         dataSource:
-            dbCreate: none
-            url: jdbc:postgresql://localhost:5432/warehouse
+            dbCreate: update
+            url: jdbc:postgresql://localhost:5432/warehouse_prod
             properties:
                 jmxEnabled: true
                 initialSize: 5
@@ -154,7 +154,7 @@ environments:
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
         server:
-            port: 8080
+            port: 8081
 ---
 warehouse:
     refreshDataOnStartup: false
