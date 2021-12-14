@@ -5,11 +5,7 @@ import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.springframework.context.MessageSource
-import simple.data.warehouse.dto.input.CustomValidationErrorCodesDto
-import simple.data.warehouse.dto.input.ApiQuery
-import simple.data.warehouse.dto.input.QueryCondition
-import simple.data.warehouse.dto.input.QueryOrderBy
-import simple.data.warehouse.dto.input.QueryProjection
+import simple.data.warehouse.dto.input.*
 import simple.data.warehouse.enums.ConditionType
 import simple.data.warehouse.enums.ProjectionType
 
@@ -51,8 +47,7 @@ class ApiQueryValidationService {
     boolean validateConditionCombination(QueryCondition queryCondition) {
         List<String> forbiddenForType = forbiddenConditionCombinations.get(queryCondition.type)
         if (forbiddenForType && forbiddenForType.contains(queryCondition.getAttributeName())) {
-            String error = messageSource.getMessage("api.condition.forbiddenCombination", [queryCondition.type, queryCondition.attributeName] as Object[], null)
-            queryCondition.errorMessages.add(error)
+            addErrorMessage("api.condition.forbiddenCombination", [queryCondition.type, queryCondition.attributeName], queryCondition.errorMessages)
             return false
         }
         return true

@@ -13,7 +13,7 @@ class StatisticsController {
 
     def retrieve(ApiQuery apiQuery) {
         apiQuery.apiQueryValidationService = apiQueryValidationService
-        if ( apiQuery.getAllValidationErrorMessages().size() > 0) {
+        if (apiQuery.getAllValidationErrorMessages().size() > 0) {
             response.status = 400
             QueryResult queryResult = new QueryResult()
             queryResult.errorMessages = apiQuery.getAllValidationErrorMessages()

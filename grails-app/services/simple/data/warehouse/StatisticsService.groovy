@@ -4,7 +4,8 @@ import org.grails.datastore.mapping.query.api.BuildableCriteria
 import org.hibernate.criterion.CriteriaSpecification
 import simple.data.warehouse.dto.QueryResult
 import simple.data.warehouse.dto.input.ApiQuery
-import simple.data.warehouse.enums.*
+import simple.data.warehouse.enums.ConditionType
+import simple.data.warehouse.enums.ProjectionType
 
 class StatisticsService {
 
@@ -62,16 +63,16 @@ class StatisticsService {
                             case ProjectionType.SUM.name():
                                 sum(it.attributeName, it.alias ?: it.attributeName)
                                 return
-                            case ProjectionType.AVG.name() :
+                            case ProjectionType.AVG.name():
                                 avg(it.attributeName, it.alias ?: it.attributeName)
                                 return
-                            case ProjectionType.MAX.name() :
+                            case ProjectionType.MAX.name():
                                 max(it.attributeName, it.alias ?: it.attributeName)
                                 return
-                            case ProjectionType.MIN.name() :
+                            case ProjectionType.MIN.name():
                                 min(it.attributeName, it.alias ?: it.attributeName)
                                 return
-                            case ProjectionType.COUNT.name() :
+                            case ProjectionType.COUNT.name():
                                 count(it.attributeName, it.alias ?: it.attributeName)
                         }
 
