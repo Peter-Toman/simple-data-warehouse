@@ -10,6 +10,10 @@ class UrlMappings {
         put "/$controller/$id(.$format)?"(action:"update")
         patch "/$controller/$id(.$format)?"(action:"patch")
 
+        "/api/v1/statistics"(controller: 'statistics', action: 'retrieve')
+        "/api/v1/list/campaigns"(controller: 'statistics', action: 'listCampaigns')
+        "/api/v1/list/dataSources"(controller: 'statistics', action: 'listDataSources')
+
         "/"(controller: 'application', action:'index')
         "500"(view: '/error')
         "404"(view: '/notFound')

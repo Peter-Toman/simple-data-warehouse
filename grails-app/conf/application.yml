@@ -125,12 +125,12 @@ dataSource:
 environments:
     development:
         dataSource:
-            dbCreate: create-drop
-            url: jdbc:postgresql://localhost:5432/warehouse
+            dbCreate: update
+            url: jdbc:postgresql://localhost:5432/warehouse_dev
     test:
         dataSource:
-            dbCreate: update
-            url: jdbc:postgresql://localhost:5432/warehouse
+            dbCreate: create-drop
+            url: jdbc:postgresql://localhost:5432/warehouse_test
     production:
         dataSource:
             dbCreate: none
@@ -153,3 +153,8 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+        server:
+            port: 8080
+---
+warehouse:
+    refreshDataOnStartup: false

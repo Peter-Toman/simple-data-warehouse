@@ -22,6 +22,16 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
+appender( 'FILE', RollingFileAppender ){
+    file = 'logs/app.log'
+    append = true
+    encoder( PatternLayoutEncoder ){ pattern = '%d{HH:mm:ss.SSS} [%thread] %level %logger{36} - %msg%n' }
+    rollingPolicy( TimeBasedRollingPolicy ){
+        fileNamePattern = 'logs/app-Log-%d{yyyy-MM-dd}.log'
+        maxHistory = 5
+    }
+}
+
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir != null) {
     appender("FULL_STACKTRACE", FileAppender) {
@@ -34,4 +44,4 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     }
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
 }
-root(ERROR, ['STDOUT'])
+root(INFO, ['FILE'])
