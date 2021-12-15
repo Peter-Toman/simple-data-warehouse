@@ -120,3 +120,4 @@ environments:
 ---
 warehouse:
     refreshDataOnStartup: false
+    maxBatchSize: 1000

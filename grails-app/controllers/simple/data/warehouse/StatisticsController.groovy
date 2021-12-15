@@ -9,7 +9,7 @@ class StatisticsController {
     def statisticsService
     def apiQueryValidationService
 
-    static allowedMethods = ['POST']
+    static allowedMethods = ["GET", "POST"]
 
     def retrieve(ApiQuery apiQuery) {
         apiQuery.apiQueryValidationService = apiQueryValidationService
@@ -24,10 +24,12 @@ class StatisticsController {
     }
 
     def listCampaigns() {
-        return Campaign.all.collect { it.name } as JSON
+        List<String> campaignNames = Campaign.all.collect { it.name }
+        render campaignNames as JSON
     }
 
     def listDataSources() {
-        return DataSource.all.collect { it.name } as JSON
+        List<String> dataSourceNames = DataSource.all.collect { it.name }
+        render dataSourceNames as JSON
     }
 }

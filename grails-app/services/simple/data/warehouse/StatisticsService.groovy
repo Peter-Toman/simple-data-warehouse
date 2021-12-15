@@ -9,12 +9,19 @@ import simple.data.warehouse.enums.ProjectionType
 
 class StatisticsService {
 
+    def grailsApplication
+
     QueryResult getResult(ApiQuery apiQuery) {
         BuildableCriteria dpCriteria = DailyPerformance.createCriteria()
 
+        Long maxBatchSize = grailsApplication.config.get("warehouse.maxBatchSize") as Long
+        if (!apiQuery.batchSize || apiQuery.batchSize >= maxBatchSize) {
+            apiQuery.batchSize = maxBatchSize
+        }
+
         List<String> missingRequiredGroupBy = provideRequiredMissingGroupBy(apiQuery)
 
-        List result = dpCriteria.list {
+        List result = dpCriteria.list (max: apiQuery.batchSize ?: maxBatchSize, offset: apiQuery.offset ?: 0) {
             resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
 
             apiQuery.conditions.each {
@@ -51,7 +58,7 @@ class StatisticsService {
             }
 
             apiQuery.orderBy.each {
-                order(it.attributeName, it.direction ?: "ASC")
+                order(it.attributeName, it.direction?.toLowerCase() ?: "asc")
             }
 
             if ((apiQuery.projections && apiQuery.projections.size() > 0) || apiQuery.groupBy && apiQuery.groupBy.size() > 0) {

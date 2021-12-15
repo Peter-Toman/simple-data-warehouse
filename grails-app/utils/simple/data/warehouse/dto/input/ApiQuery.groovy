@@ -11,6 +11,8 @@ class ApiQuery extends CustomValidationErrorCodesDto implements Validateable {
     List<QueryCondition> conditions
     List<String> groupBy
     List<QueryOrderBy> orderBy
+    Long batchSize = 100
+    Long offset = 0
 
     static constraints = {
         projections nullable: true, validator: { List<QueryProjection> projections, ApiQuery obj ->
@@ -25,6 +27,8 @@ class ApiQuery extends CustomValidationErrorCodesDto implements Validateable {
         orderBy nullable: true, validator: { List<QueryOrderBy> orderBy, ApiQuery obj ->
             return obj.apiQueryValidationService.validateAllOrderBy(orderBy, obj)
         }
+        batchSize nullable: true
+        offset nullable: true
     }
 
     boolean validate() {

@@ -6,7 +6,9 @@ import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.hibernate.Transaction
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import grails.converters.JSON
 
 class BootStrap {
 
@@ -15,6 +17,11 @@ class BootStrap {
 
     def init = { servletContext ->
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
+        JSON.registerObjectMarshaller(Date) {
+            DateFormat dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
+            return dateFormat.format(it)
+        }
 
         boolean refreshData = grailsApplication.config.get("warehouse.refreshDataOnStartup") as boolean
         if (Environment.current == Environment.TEST) {
