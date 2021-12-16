@@ -144,6 +144,9 @@ class ApiQueryValidationService {
     }
 
     boolean validateAliasName(String aliasName, CustomValidationErrorCodesDto obj) {
+        if (aliasName == null || aliasName == "") {
+            return true
+        }
         boolean isValid = aliasName.matches("[0-9a-zA-Z_\\-]+")
         if (!isValid) {
             addErrorMessage("api.attributeAlias.invalidCharacters", [aliasName], obj.errorMessages)
