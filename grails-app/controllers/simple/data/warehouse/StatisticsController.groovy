@@ -4,6 +4,10 @@ import grails.converters.JSON
 import simple.data.warehouse.dto.QueryResult
 import simple.data.warehouse.dto.input.ApiQuery
 
+/**
+ * API endpoints
+ * */
+
 class StatisticsController {
 
     def statisticsService

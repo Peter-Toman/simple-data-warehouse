@@ -11,12 +11,23 @@ class DailyPerformance {
     Long clicks
     BigDecimal ctr
 
+    /**
+     * Because the are not many unique data source or campaign names when compared
+     * to the number of data we will separate these into their own tables where
+     * lookup on strings should be much faster given the much lower number of rows
+     *
+     * */
+
     DataSource dataSource
     Campaign campaign
 
     static constraints = {
         ctr scale: 10
     }
+
+    /**
+     * Calculate click through rate (ctr) from clicks and impressions before saving
+     * */
 
     def beforeInsert() {
         if (clicks && impressions && impressions != 0) {

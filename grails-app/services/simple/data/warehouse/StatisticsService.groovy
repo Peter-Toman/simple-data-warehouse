@@ -21,8 +21,12 @@ class StatisticsService {
 
         List<String> missingRequiredGroupBy = provideRequiredMissingGroupBy(apiQuery)
 
+        boolean hasProjections = apiQuery.projections?.size() > 0
+
         List result = dpCriteria.list (max: apiQuery.batchSize ?: maxBatchSize, offset: apiQuery.offset ?: 0) {
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            if (hasProjections) {
+                resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            }
 
             apiQuery.conditions.each {
                 switch (it.type) {

@@ -11,6 +11,10 @@ import simple.data.warehouse.enums.ProjectionType
 
 import java.text.SimpleDateFormat
 
+/**
+ * Validation service for object ApiQuery and it objects used in nested properties
+ * */
+
 class ApiQueryValidationService {
 
     MessageSource messageSource
