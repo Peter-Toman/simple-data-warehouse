@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat
 class ApiQueryValidationService {
 
     MessageSource messageSource
+    GormUtilService gormUtilService
 
     private static final Map<String, List<String>> forbiddenConditionCombinations = [
             // conditionType : attributeName
@@ -69,7 +70,7 @@ class ApiQueryValidationService {
     }
 
     boolean validateAllGroupBy(List<String> groupBy, ApiQuery obj) {
-        List<String> persistentProperties = getAllPersistentPropertyNames(DailyPerformance.class)
+        List<String> persistentProperties = gormUtilService.getAllPersistentPropertyNames(DailyPerformance.class)
         List<String> attributeProjections = obj.projections.findAll {
             it.type.toLowerCase() == ProjectionType.ATTRIBUTE.name().toLowerCase()
         }.collect { it.attributeName }
@@ -122,7 +123,7 @@ class ApiQueryValidationService {
     }
 
     boolean validateAttributeName(String attributeName, CustomValidationErrorCodesDto obj) {
-        List<String> persistentProperties = getAllPersistentPropertyNames(DailyPerformance.class)
+        List<String> persistentProperties = gormUtilService.getAllPersistentPropertyNames(DailyPerformance.class)
         if (!persistentProperties.contains(attributeName)) {
             addErrorMessage("api.attributeWithName.notPresent", [attributeName], obj.errorMessages)
             return false
@@ -131,7 +132,7 @@ class ApiQueryValidationService {
     }
 
     boolean validateOrderByName(String orderByName, QueryOrderBy obj) {
-        List<String> persistentProperties = getAllPersistentPropertyNames(DailyPerformance.class)
+        List<String> persistentProperties = gormUtilService.getAllPersistentPropertyNames(DailyPerformance.class)
         List<String> usedAliases = obj.apiQuery.projections.findAll { it.alias != null }.collect { it.alias }
         List<String> acceptable = []
         acceptable.addAll(persistentProperties)
@@ -163,7 +164,7 @@ class ApiQueryValidationService {
     }
 
     boolean validateConditionValueDataType(String value, QueryCondition queryCondition) {
-        List<PersistentProperty> persistentProperties = getAllPersistentProperties(DailyPerformance.class)
+        List<PersistentProperty> persistentProperties = gormUtilService.getAllPersistentProperties(DailyPerformance.class)
         Class<?> requiredDataType = persistentProperties.find { (it.getName() == queryCondition.attributeName) }.getType()
         try {
             if (requiredDataType == Long.class) {
@@ -194,17 +195,6 @@ class ApiQueryValidationService {
             }
         }
         return result
-    }
-
-    private List<String> getAllPersistentPropertyNames(Class clazz) {
-        return getAllPersistentProperties(clazz).collect {
-            it.name
-        }
-    }
-
-    private List<PersistentProperty> getAllPersistentProperties(Class clazz) {
-        PersistentEntity persistentEntity = grailsDomainClassMappingContext.getPersistentEntity(clazz.name)
-        return persistentEntity.getPersistentProperties()
     }
 
     private void addErrorMessage(String code, List args, List<String> errorMessages) {
