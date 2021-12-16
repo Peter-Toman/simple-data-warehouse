@@ -3,6 +3,7 @@ package simple.data.warehouse
 import grails.gorm.PagedResultList
 import org.grails.datastore.mapping.query.api.BuildableCriteria
 import org.hibernate.criterion.CriteriaSpecification
+import org.hibernate.type.StandardBasicTypes
 import simple.data.warehouse.dto.QueryResult
 import simple.data.warehouse.dto.input.ApiQuery
 import simple.data.warehouse.enums.ConditionType
@@ -23,6 +24,16 @@ class StatisticsService {
         List<String> missingRequiredGroupBy = provideRequiredMissingGroupBy(apiQuery)
 
         boolean hasProjections = apiQuery.projections?.size() > 0
+
+        boolean hasAggregateProjections = apiQuery.projections?.findAll { it.type != ProjectionType.ATTRIBUTE.name() }?.size() > 0
+        boolean hasAttributeProjections = apiQuery.projections?.findAll { it.type == ProjectionType.ATTRIBUTE.name() }?.size() > 0
+        String attributeProjectionsForDistinct = "id"
+        if (hasAttributeProjections) {
+            attributeProjectionsForDistinct = apiQuery.projections.findAll { it.type == ProjectionType.ATTRIBUTE.name() }.collect {
+                camelCaseToSnakeCase(it.attributeName)
+            }.join(", ")
+        }
+        String sqlCountProjection = "sum( count( distinct (${attributeProjectionsForDistinct}) ) ) OVER() as totalRows"
 
         PagedResultList result = dpCriteria.list (max: apiQuery.batchSize ?: maxBatchSize, offset: apiQuery.offset ?: 0) {
             if (hasProjections) {
@@ -90,6 +101,13 @@ class StatisticsService {
 
             if ((apiQuery.projections && apiQuery.projections.size() > 0) || apiQuery.groupBy && apiQuery.groupBy.size() > 0) {
                 projections {
+                    /**
+                     *  Workaround for faulty value of total count for gorm's PagedResultList when aggregation functions are used in projections
+                     *  Puts totalRows as another column into result rows so we can extract it later
+                     * */
+                    if ( hasAggregateProjections && hasAttributeProjections ) {
+                        sqlProjection sqlCountProjection, ['totalRows'], [StandardBasicTypes.INTEGER]
+                    }
                     apiQuery.projections.each {
                         switch (it.type) {
                             case ProjectionType.ATTRIBUTE.name():
@@ -129,6 +147,17 @@ class StatisticsService {
         QueryResult queryResult = new QueryResult()
         queryResult.result = result
         queryResult.totalRows = result.getTotalCount()
+        /**
+         *  Workaround for faulty value of total count for gorm's PagedResultList
+         *  Retrieves totalRows from result, then remove this property from all rows
+         * */
+        if (hasAggregateProjections && hasAttributeProjections && queryResult.result && queryResult.result.size() > 0
+            && queryResult.result.first()["totalRows"] != null && (queryResult.result.first()["totalRows"] as Long) < queryResult.totalRows) {
+            queryResult.totalRows = queryResult.result.first()["totalRows"] as Long
+            queryResult.result.each { Map it ->
+                it.remove("totalRows")
+            }
+        }
         return queryResult
     }
 
@@ -142,6 +171,11 @@ class StatisticsService {
             return []
         }
         return requiredGroupBy - apiQuery.groupBy
+    }
+
+    private static String camelCaseToSnakeCase(String camelCaseStr) {
+        String ret = camelCaseStr.replaceAll('([A-Z]+)([A-Z][a-z])', '$1_$2').replaceAll('([a-z])([A-Z])', '$1_$2');
+        return ret.toLowerCase();
     }
 
 }
