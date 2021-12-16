@@ -95,7 +95,7 @@ environments:
             url: jdbc:postgresql://localhost:5432/warehouse_test
     production:
         dataSource:
-            dbCreate: validate
+            dbCreate: none
             url: jdbc:postgresql://localhost:5432/warehouse_prod
             properties:
                 jmxEnabled: true
