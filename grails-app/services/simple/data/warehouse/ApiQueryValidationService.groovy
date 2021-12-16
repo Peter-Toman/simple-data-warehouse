@@ -23,7 +23,9 @@ class ApiQueryValidationService {
             // conditionType : attributeName
             "LIKE": ["clicks", "impressions", "ctr", "date"],
             "LE"  : ["campaignName", "dataSourceName"],
-            "GE"  : ["campaignName", "dataSourceName"]
+            "GE"  : ["campaignName", "dataSourceName"],
+            "LT"  : ["campaignName", "dataSourceName"],
+            "GT"  : ["campaignName", "dataSourceName"]
     ]
 
     private static final Map<String, List<String>> forbiddenProjectionCombinations = [

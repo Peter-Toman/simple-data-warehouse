@@ -2,6 +2,6 @@ package simple.data.warehouse.enums
 
 enum ConditionType {
 
-    EQ, LE, GE, LIKE, NE
+    EQ, LE, GE, LIKE, NE, LT, GT
 
 }

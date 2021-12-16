@@ -57,6 +57,12 @@ class StatisticsService {
                         }
                         ne(it.attributeName, it.conditionValueAsCorrectDataType())
                         return
+                    case ConditionType.LT.name():
+                        lt(it.attributeName, it.conditionValueAsCorrectDataType())
+                        return
+                    case ConditionType.GT.name():
+                        gt(it.attributeName, it.conditionValueAsCorrectDataType())
+                        return
                     case ConditionType.LE.name():
                         le(it.attributeName, it.conditionValueAsCorrectDataType())
                         return
