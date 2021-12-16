@@ -164,11 +164,12 @@ descending ordering of result set data.
 
 ### Paging
 
-If you need to query certain amount of rows or return rows starting from some position 
+If you need to query certain amount of rows and/or return rows starting from some position 
 you can use parameters `batchSize` and `offset`. Both are not required to specify and 
 when they are not specified then `batchSize` has default and maximum value of 1000 rows.
 `offset` when not set has default value of 0. Both of these are of course numbers and of 
-data type long.
+data type long. In case of a valid query there is an attribute `totalRows` in response 
+object which indicates the total number of rows that match the query conditions.
 
 ### Response
 
@@ -181,7 +182,8 @@ TABLE 7: object QueryResult
 attribute name |      data type     | can be null or empty 
 --------------------------------------------------
 errorMessages  |  array of strings  |         yes
-result         |  array             |         yes
+result         |      array         |         yes
+totalRows      |      long          |         yes
 ```
 Attribute `errorMessages` contains validation error messages if there is something 
 wrong with the request ApiQuery object. 

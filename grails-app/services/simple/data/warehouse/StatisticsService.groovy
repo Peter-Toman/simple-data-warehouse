@@ -1,5 +1,6 @@
 package simple.data.warehouse
 
+import grails.gorm.PagedResultList
 import org.grails.datastore.mapping.query.api.BuildableCriteria
 import org.hibernate.criterion.CriteriaSpecification
 import simple.data.warehouse.dto.QueryResult
@@ -23,7 +24,7 @@ class StatisticsService {
 
         boolean hasProjections = apiQuery.projections?.size() > 0
 
-        List result = dpCriteria.list (max: apiQuery.batchSize ?: maxBatchSize, offset: apiQuery.offset ?: 0) {
+        PagedResultList result = dpCriteria.list (max: apiQuery.batchSize ?: maxBatchSize, offset: apiQuery.offset ?: 0) {
             if (hasProjections) {
                 resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
             }
@@ -127,6 +128,7 @@ class StatisticsService {
 
         QueryResult queryResult = new QueryResult()
         queryResult.result = result
+        queryResult.totalRows = result.getTotalCount()
         return queryResult
     }
 

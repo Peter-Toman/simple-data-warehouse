@@ -4,5 +4,6 @@ class QueryResult {
 
     Set<String> errorMessages
     List result
+    Long totalRows
 
 }
