@@ -12,12 +12,14 @@ import grails.converters.JSON
 
 class BootStrap {
 
+    DateFormat dateFormat
+
     def grailsApplication
     SessionFactory sessionFactory
 
     def init = { servletContext ->
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        DateFormat dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
+        dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
 
         JSON.registerObjectMarshaller(Date) {
             return dateFormat.format(it)
@@ -79,7 +81,7 @@ class BootStrap {
         String clicks = fields[3]
         String impressions = fields[4]
 
-        Date date = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT).parse(day)
+        Date date = dateFormat.parse(day)
 
         DataSource dataSource = DataSource.findByName(dataSourceName)
         if (!dataSource) {
