@@ -1,6 +1,5 @@
 package simple.data.warehouse
 
-
 import grails.testing.services.ServiceUnitTest
 import simple.data.warehouse.dto.input.ApiQuery
 import simple.data.warehouse.dto.input.QueryCondition
