@@ -9,8 +9,6 @@ import simple.data.warehouse.dto.input.QueryOrderBy
 import simple.data.warehouse.dto.input.QueryProjection
 import spock.lang.Specification
 
-import java.text.SimpleDateFormat
-
 @Integration
 @Rollback
 class StatisticsServiceSpec extends Specification {
@@ -18,10 +16,14 @@ class StatisticsServiceSpec extends Specification {
     StatisticsService statisticsService
     TestDataCreator testDataCreator
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
-
     void setup() {
         testDataCreator.createTestData()
+    }
+
+    def cleanup() {
+        DailyPerformance.executeUpdate('delete from DailyPerformance')
+        DataSource.executeUpdate('delete from DataSource')
+        Campaign.executeUpdate('delete from Campaign')
     }
 
     def 'testCriteriaQueryForMax'() {
@@ -93,6 +95,29 @@ class StatisticsServiceSpec extends Specification {
         then:
         queryResult.result != null
         queryResult.result.size() == 5
+
+    }
+
+    def 'testCriteriaQueryWithNoProjections'() {
+        when:
+
+        ApiQuery apiQuery = new ApiQuery(
+                conditions: [
+                        new QueryCondition(type: "EQ", attributeName: "dataSourceName", value: "AndroidAds"),
+                        new QueryCondition(type: "GE", attributeName: "date", value: "12/08/21")
+                ],
+                orderBy: [
+                        new QueryOrderBy(attributeName: "date", direction: "DESC")
+                ]
+        )
+
+        QueryResult queryResult = statisticsService.getResult(apiQuery)
+
+        then:
+        queryResult.result != null
+        queryResult.result.size() == 6
+        queryResult.result[0].hasProperty("dataSource")
+        queryResult.result[0].hasProperty("dataSource")
 
     }
 

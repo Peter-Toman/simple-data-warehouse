@@ -2,11 +2,16 @@ package simple.data.warehouse
 
 import java.text.SimpleDateFormat
 
+/**
+ * Component to create data for integration tests
+ * */
+
 class TestDataCreator {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
-
     def createTestData() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
+
         DataSource webAds = new DataSource(name: "WebAds")
         DataSource androidAds = new DataSource(name: "AndroidAds")
 
