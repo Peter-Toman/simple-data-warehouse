@@ -162,7 +162,7 @@ class StatisticsService {
     }
 
     List<String> provideRequiredMissingGroupBy(ApiQuery apiQuery) {
-        List<String> requiredGroupBy = apiQuery.projections.find {
+        List<String> requiredGroupBy = apiQuery.projections.findAll {
             it.type == ProjectionType.ATTRIBUTE.name()
         }.collect {
             it.attributeName
