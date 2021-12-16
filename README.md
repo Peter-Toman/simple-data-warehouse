@@ -124,9 +124,12 @@ TABLE 6: QueryCondition types
 type   | meaning in context to condition value |       forbiden attributes
 ---------------------------------------------------------------------------------------
 EQ     |       equals to value                 |
+NE     |    not equals to value                |
 LIKE   |  data value contains condition value  | clicks, impressions, ctr, date
 LE     |   less or equals than value           |  campaignName, dataSourceName
 GE     |   greater or equals than value        |  campaignName, dataSourceName
+LT     |        less than value                |  campaignName, dataSourceName
+GT     |        greater than value             |  campaignName, dataSourceName
 
 ```
 
