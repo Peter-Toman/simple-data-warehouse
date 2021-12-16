@@ -177,7 +177,7 @@ Response is also a json object generated from groovy class
 `simple.data.warehouse.dto.QueryResult`.
 
 ```
-TABLE 7: object QueryResult
+TABLE 8: object QueryResult
 
 attribute name |      data type     | can be null or empty 
 --------------------------------------------------
