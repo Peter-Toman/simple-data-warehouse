@@ -37,6 +37,22 @@ class StatisticsService {
                         }
                         eq(it.attributeName, it.conditionValueAsCorrectDataType())
                         return
+                    case ConditionType.NE.name():
+                        String value = it.value
+                        if (it.attributeName == "dataSourceName") {
+                            not {
+                                "in"("dataSource", DataSource.findAllByName(value))
+                            }
+                            return
+                        }
+                        if (it.attributeName == "campaignName") {
+                            not {
+                                "in"("campaign", Campaign.findAllByName(value))
+                            }
+                            return
+                        }
+                        ne(it.attributeName, it.conditionValueAsCorrectDataType())
+                        return
                     case ConditionType.LE.name():
                         le(it.attributeName, it.conditionValueAsCorrectDataType())
                         return
