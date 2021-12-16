@@ -17,10 +17,21 @@ class BootStrap {
 
     def init = { servletContext ->
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+        DateFormat dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
 
         JSON.registerObjectMarshaller(Date) {
-            DateFormat dateFormat = new SimpleDateFormat(GlobalStrings.DATE_ONLY_FORMAT)
             return dateFormat.format(it)
+        }
+
+        JSON.registerObjectMarshaller(DailyPerformance) {
+            def output = [:]
+            output['dataSourceName'] = it.dataSourceName
+            output['campaignName'] = it.campaignName
+            output['date'] = it.date
+            output['impressions'] = it.impressions
+            output['clicks'] = it.clicks
+            output['ctr'] = it.ctr
+            return output
         }
 
         boolean refreshData = grailsApplication.config.get("warehouse.refreshDataOnStartup") as boolean
