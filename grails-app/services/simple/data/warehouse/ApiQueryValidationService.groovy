@@ -76,13 +76,16 @@ class ApiQueryValidationService {
         }.collect { it.attributeName }
         boolean hasProjections = obj.projections?.size() != 0
         boolean isValid = true
-        if (!hasProjections || groupBy?.size() == 0) {
+        if (!hasProjections && groupBy?.size() == 0) {
             persistentProperties.each {
                 if (!groupBy.contains(it)) {
                     addErrorMessage("api.groupBy.notInProperties", [it], obj.errorMessages)
                     isValid = false
                 }
             }
+        } else if (!hasProjections && groupBy?.size() > 0) {
+            addErrorMessage("api.groupBy.notAllowedHere", [groupBy.join(", ")], obj.errorMessages)
+            isValid = false
         } else {
             groupBy.each {
                 if (!attributeProjections.contains(it)) {
